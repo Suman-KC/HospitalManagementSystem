@@ -30,3 +30,10 @@ class Appointment(models.Model):
     time=models.TimeField()
     def __str__(self):
         return self.Doctor.Name+self.Patient.name
+class Contact(models.Model):
+    name=models.CharField(max_length=200)
+    email=models.EmailField(max_length=254)   
+    mobile=models.IntegerField()
+    message=models.TextField()
+    def __str__(self):
+        return self.name

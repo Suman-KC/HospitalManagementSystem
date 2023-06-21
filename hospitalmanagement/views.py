@@ -1,15 +1,36 @@
 from django.shortcuts import render,redirect
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-from .models import Doctor,Patient,Appointment
+from .models import Doctor,Patient,Appointment,Contact
+from django.contrib import messages
 # Create your views here.
 def home(request):
-    if not request.user.is_staff:
-        logout(request)
+    # if not request.user.is_staff:
+    #     logout(request)
     return render(request,'home.html')
 def about(request):
     return render(request,'about.html')
 def contact(request):
+    if request.method == "POST":
+        name=request.POST['name']
+        email=request.POST['email']
+        mobile=request.POST['mobile']
+        message=request.POST['message']
+        user=Contact(name=name,email=email,mobile=mobile,message=message)
+        user.save()
+        subject = 'Test Email'
+        #message = 'This is a test email from Django!'
+        message = render_to_string('test.html')
+        from_email = 'kcsuman2058@gmail.com'
+        # from_email = 'kamal450mahara@gmail.com'
+        recipient_list = [email]
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False,html_message=message)
+        # return HttpResponse("successfully sent")
+        messages.success(request,"Successfully Sent Mail")
+        # return redirect('home')
     return render(request,'contact.html')
 
 def index(request):
